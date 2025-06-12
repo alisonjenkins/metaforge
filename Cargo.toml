@@ -1,0 +1,15 @@
+[package]
+name = "metaforge"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.98"
+clap = { version = "4", features = ["color", "derive", "env", "unicode", "suggestions", "wrap_help"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_yml = "0.0.12"
+thiserror = "2.0.12"
+tokio = { version = "1", features = ["full"] }
+
+[dev-dependencies]
+tempfile = "3.20.0"
