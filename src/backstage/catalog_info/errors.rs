@@ -1,22 +1,22 @@
-use crate::git::{FindGitRepoRootError, GetOriginRemoteRepoNameError};
+use crate::git::{GetOriginRemoteRepoNameError, GitRepoTryFromError};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum CatalogInfoExistsError {
     #[error("Failed to find the git repository root: {0}")]
-    FailedToFindGitRepoRoot(#[from] FindGitRepoRootError),
+    FailedToFindGitRepoRoot(#[from] GitRepoTryFromError),
 }
 
 #[derive(Error, Debug)]
 pub enum CatalogInfoParseError {
     #[error("Failed to find the git repo root: {0}")]
-    FailedToFindGitRepoRoot(#[from] FindGitRepoRootError),
+    FindGitRepoRoot(#[from] GitRepoTryFromError),
 
     #[error("Couldn't read the catalog-info file: {0}")]
-    FailedToReadCatalogInfoFile(#[from] std::io::Error),
+    ReadCatalogInfoFile(#[from] std::io::Error),
 
     #[error("Could not parse the catalog-info file: {0}")]
-    FailedToParseCatalogInfoFile(#[from] serde_yml::Error),
+    ParseCatalogInfoFile(#[from] serde_yml::Error),
 }
 
 #[derive(Error, Debug)]
@@ -33,6 +33,9 @@ pub enum GetCatalogInfoError {
 
 #[derive(Error, Debug)]
 pub enum NewCatalogInfoError {
+    #[error("Failed to get the repo name due to error: {0}")]
+    FailedToGetGitRepo(#[from] GitRepoTryFromError),
+
     #[error("Failed to get the repo name due to error: {0}")]
     FailedToGetOriginRemoteRepoName(#[from] GetOriginRemoteRepoNameError),
 }

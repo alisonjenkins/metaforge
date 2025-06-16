@@ -1,17 +1,20 @@
 use anyhow::Result;
 use clap::Parser;
-use metaforge::backstage::CatalogInfo;
+// use metaforge::backstage::CatalogInfo;
 use metaforge::cli::Args;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     let _args = Args::parse();
 
-    let catalog_info = CatalogInfo::get().await?;
+    let mut repo = metaforge::git::GitRepo::try_from(None).await?;
+    repo.find_projects().await?;
 
-    print!("{:?}", catalog_info);
+    for project in &repo.projects {
+        // project.root
+    }
 
-    // scan the repo for a go.mod file
-    // find the bxdigital dependencies
+    println!("{repo:?}");
+
     Ok(())
 }

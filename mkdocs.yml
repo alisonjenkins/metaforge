@@ -1,0 +1,28 @@
+site_name: Backstage Documentation
+nav:
+  - Home: index.md
+  # - Contributing Documentation: contributing-docs.md
+  # - Adding Components: adding-components.md
+  # - Integrations: ./integrations.md
+  # - Architecture Decision Records (ADRs):
+  #   - 0001-Use-ADRs: ./adr/0001-use-adr.md
+  #   - 0002-Component-Ownership: ./adr/0002-component-ownership.md
+plugins:
+  - techdocs-core
+markdown_extensions:
+  - pymdownx.superfences:
+        # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+  - pymdownx.highlight:
+      linenums: false
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+# extra_javascript:
+#   - javascripts/mathjax.js
+#   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js

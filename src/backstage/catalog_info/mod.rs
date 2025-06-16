@@ -1,6 +1,6 @@
 mod errors;
 
-use crate::git::{find_git_repo_root, get_origin_remote_repo_name};
+use crate::git::GitRepo;
 pub use errors::{
     CatalogInfoExistsError, CatalogInfoParseError, GetCatalogInfoError, NewCatalogInfoError,
 };
@@ -94,7 +94,8 @@ impl CatalogInfo {
 
     /// Creates a new Backstage Catalog info file and returns it's initial data.
     pub async fn new() -> Result<CatalogInfo, NewCatalogInfoError> {
-        let repo_name = get_origin_remote_repo_name(None).await?;
+        let repo = GitRepo::try_from(None).await?;
+        let repo_name = repo.get_origin_remote_repo_name().await?;
 
         Ok(CatalogInfo {
             api_version: "backstage.io/v1alpha1".to_string(),
@@ -102,8 +103,7 @@ impl CatalogInfo {
             metadata: CatalogInfoMetadata {
                 name: repo_name.clone(),
                 description: format!(
-                    "A Backstage catalog info file for the {} repository",
-                    repo_name
+                    "A Backstage catalog info file for the {repo_name} repository"
                 ),
                 annotations: BTreeMap::new(),
                 tags: BTreeMap::new(),
@@ -122,16 +122,16 @@ impl CatalogInfo {
     /// Checks if the Backstage catalog info file exists in the repository root.
     pub async fn exists() -> Result<bool, CatalogInfoExistsError> {
         // find the root of the repository
-        let repo_root = find_git_repo_root(None).await?;
+        let repo = GitRepo::try_from(None).await?;
 
         // check the file exists
-        Ok(repo_root.join(CATALOG_INFO_FILE).exists())
+        Ok(repo.root.join(CATALOG_INFO_FILE).exists())
     }
 
     /// Parses the Backstage Catalog info file if it exists
     pub async fn parse() -> Result<CatalogInfo, CatalogInfoParseError> {
-        let catalog_info_file =
-            std::fs::File::open(find_git_repo_root(None).await?.join(CATALOG_INFO_FILE))?;
+        let repo_catalog_path = GitRepo::try_from(None).await?.root.join(CATALOG_INFO_FILE);
+        let catalog_info_file = std::fs::File::open(repo_catalog_path)?;
         Ok(serde_yml::from_reader(catalog_info_file)?)
     }
 }

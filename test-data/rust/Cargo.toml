@@ -14,7 +14,7 @@ strum = "0.27.1"
 strum_macros = "0.27.1"
 thiserror = "2.0.12"
 tokio = { version = "1", features = ["full"] }
-regex = { version = "1" }
+internal = { git = "https://alisonjenkins@bitbucket.org/acompany/metaforge.git" }
 
 [dev-dependencies]
 tempfile = "3.20.0"
